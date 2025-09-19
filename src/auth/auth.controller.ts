@@ -1,5 +1,15 @@
-import { Controller, HttpCode, HttpStatus, Body, Post } from '@nestjs/common';
+import {
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Body,
+  Post,
+  Get,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { AuthGuard } from './auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -9,5 +19,12 @@ export class AuthController {
   @Post('login')
   login(@Body() input: { username: string; password: string }) {
     return this.authService.authenticate(input);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('me')
+  getUserInfo(@Request() request) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
+    return request.user;
   }
 }
